@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A közös útunk</title>
+    
+    <!-- Leaflet CSS & JS (Free, no API key required) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Tailwind CSS for UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for elegant typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #f8fafc;
+        }
+
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #fdf2f8, #ede9fe);
+        }
+
+        .login-screen[hidden] {
+            display: none;
+        }
+
+        .login-card {
+            width: min(400px, 100%);
+            padding: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 20px 50px rgba(31, 41, 55, 0.16);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            margin: 0 0 8px;
+            color: #db2777;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+        }
+
+        .login-card p {
+            margin: 0 0 22px;
+            color: #4b5563;
+        }
+
+        .login-card input {
+            box-sizing: border-box;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            font: inherit;
+        }
+
+        .login-card input:focus {
+            outline: 2px solid #ec4899;
+            outline-offset: 2px;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            font: inherit;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .login-error {
+            min-height: 1.5em;
+            margin: 12px 0 0 !important;
+            color: #b91c1c !important;
+            font-size: 0.9rem;
+        }
+
+        .success-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background: #000;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
+
+        .success-screen[hidden] {
+            display: none;
+        }
+
+        .success-screen.is-fading {
+            opacity: 0;
+        }
+
+        .success-message {
+            max-width: 1000px;
+            margin: 0;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4.5rem);
+            line-height: 1.3;
+            text-align: center;
+            opacity: 0;
+        }
+
+        .success-screen.is-visible .success-message {
+            animation: reveal-success-message 2.5s ease forwards;
+        }
+
+        @keyframes reveal-success-message {
+            to {
+                opacity: 1;
+            }
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            z-index: 1; /* Keep map in background */
+        }
+
+        /* Title Overlay */
+        .title-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Above Leaflet controls */
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        .title-overlay h1 {
+            font-family: 'Playfair Display', serif;
+            color: #db2777; /* Pink-600 */
+            margin: 0;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Custom Leaflet Marker (Heart Icon) */
+        .custom-leaflet-marker {
+            background-color: #ec4899; /* Pink-500 */
+            width: 34px !important;
+            height: 34px !important;
+            box-sizing: border-box;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.6);
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-leaflet-marker::after {
+            content: '❤️';
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .custom-leaflet-marker:hover {
+            background-color: #be185d;
+            z-index: 1000 !important;
+        }
+
+        /* Leaflet Popup Customizations */
+        .leaflet-popup-content-wrapper {
+            padding: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            width: 300px !important;
+        }
+
+        .leaflet-popup-close-button {
+            color: white !important;
+            background: rgba(0,0,0,0.4) !important;
+            border-radius: 50%;
+            width: 24px !important;
+            height: 24px !important;
+            text-align: center;
+            line-height: 24px !important;
+            top: 10px !important;
+            right: 10px !important;
+            padding: 0 !important;
+            transition: background 0.2s;
+        }
+
+        .leaflet-popup-close-button:hover {
+            background: rgba(0,0,0,0.7) !important;
+        }
+
+        .leaflet-popup-tip-container {
+            margin-top: -1px;
+        }
+
+        /* Memory Card Inner Content */
+        .memory-card {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .memory-card-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .memory-card-body {
+            padding: 20px;
+            background: white;
+        }
+
+        .memory-card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #1f2937;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+
+        .memory-card-text {
+            color: #4b5563;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0 0 15px 0;
+        }
+
+        .memory-card-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            text-decoration: none;
+        }
+
+        .memory-card-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .memory-card-btn:active {
+            transform: scale(0.98);
+        }
+
+        .memory-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(6px);
+        }
+
+        .memory-modal[hidden] {
+            display: none;
+        }
+
+        .memory-modal-card {
+            position: relative;
+            width: min(760px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .memory-modal-close {
+            position: sticky;
+            top: 12px;
+            float: right;
+            z-index: 1;
+            margin: 12px 12px -48px 0;
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.75);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .memory-modal-body {
+            padding: 28px;
+        }
+
+        .memory-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .memory-gallery img {
+            display: block;
+            width: 100%;
+            height: 220px;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+        @media (max-width: 600px) {
+            .memory-modal {
+                padding: 12px;
+            }
+
+            .memory-modal-body {
+                padding: 22px;
+            }
+
+            .memory-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .memory-gallery img {
+                height: auto;
+                max-height: 360px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <section id="login-screen" class="login-screen" aria-labelledby="login-title">
+        <form id="login-form" class="login-card">
+            <h1 id="login-title">A közös útunk ✨</h1>
+            <p>Találd ki a jelszót, hogy hozzáférhess az emlékezéshez.</p>
+            <label for="login-password" class="sr-only">Jelszó</label>
+            <input id="login-password" name="password" type="password" placeholder="Jelszó" autocomplete="current-password" required autofocus />
+            <button type="submit">Belépés</button>
+            <p id="login-error" class="login-error" role="alert" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <section id="success-screen" class="success-screen" aria-live="polite" hidden>
+        <p id="success-message" class="success-message"></p>
+    </section>
+
+    <main id="map-content" hidden>
+        <!-- Overlay Title -->
+        <div class="title-overlay">
+            <h1>A közös útunk ✨</h1>
+        </div>
+
+        <!-- Map Container -->
+        <div id="map"></div>
+
+        <div id="memory-modal" class="memory-modal" role="dialog" aria-modal="true" aria-labelledby="memory-modal-title" hidden>
+            <div class="memory-modal-card">
+                <button class="memory-modal-close" type="button" aria-label="Bezárás">&times;</button>
+                <div id="memory-modal-content" class="memory-modal-body"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const loginPassword = document.getElementById('login-password');
+        const loginError = document.getElementById('login-error');
+        const loginScreen = document.getElementById('login-screen');
+        const mapContent = document.getElementById('map-content');
+        const successScreen = document.getElementById('success-screen');
+        const successMessage = document.getElementById('success-message');
+        const correctPassword = 'OurMemoriesSince2024';
+        const welcomeMessage = 'Sikeres belépés! Egy csodálatos utazás vár ránk az emlékeink között! 🌟';
+
+        loginForm.addEventListener('submit', event => {
+            event.preventDefault();
+
+            if (loginPassword.value !== correctPassword) {
+                loginError.textContent = 'Hibás jelszó.';
+                loginPassword.select();
+                return;
+            }
+
+            loginForm.querySelector('button[type="submit"]').disabled = true;
+            loginScreen.hidden = true;
+            mapContent.hidden = false;
+            initializeMap();
+            showWelcomeMessage();
+        });
+
+        async function showWelcomeMessage() {
+            successScreen.hidden = false;
+            successMessage.textContent = welcomeMessage;
+            successScreen.classList.add('is-visible');
+            await new Promise(resolve => setTimeout(resolve, 7500));
+            successScreen.classList.add('is-fading');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            successScreen.hidden = true;
+            successScreen.classList.remove('is-fading');
+            successScreen.classList.remove('is-visible');
+        }
+        
+        function initializeMap() {
+        // 1. Initialize Map centered generally to see Europe and US (or just Hungary initially)
+        // Coordinates: [Latitude, Longitude] for Leaflet
+        const map = L.map('map', {
+            center: [40.0, -15.0], // Centered over the Atlantic to see both US and Europe
+            zoom: 3,
+            zoomControl: false // We will move the zoom control
+        });
+
+        // Add zoom control to bottom right
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
+
+        // 2. Add OpenStreetMap Tile Layer (Free, no API Key)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19,
+            className: 'map-tiles'
+        }).addTo(map);
+
+        // 3. Our Memory Data (Lat, Lng)
+        const memories = [
+            {
+                id: 'baja',
+                coords: [46.18141913920191, 18.973337610921405], 
+                title: 'Baja',
+                description: 'Amikor sok év után végre lejöttél Bajára, és együtt fedeztük fel a várost!',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+            {
+                id: 'westEnd',
+                coords: [47.5140281240459, 19.059324643647546],
+                title: 'Westend',
+                description: 'Ahol a kalandok kezdődtek!',
+                images: [
+                    'https://lh3.googleusercontent.com/grass-cs/AABkmLflHnydTvqnfhKc9EdSw2B5PYvlnM6or6CbqfWPP9bDkyE01khwH7DOwjDyvY5N0YbDixoUSW_WAwyj44HZbUCiWs3mP4vDsmZSD3PZkSHvrsszrDZMSiqELvUH-2o54cPisuRXac5RpEUP=w408-h544-k-no',
+                    'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+            {
+                id: 'illuziokMuzeuma',
+                coords: [47.49849869281088, 19.055147626316934], 
+                title: 'Illúziók Múzeuma',
+                description: 'Ahol a valóság és az illúzió találkozik, és együtt csodálkoztunk a trükkökön!',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+            {
+                id: 'szeged',
+                coords: [46.25069503284322, 20.159424855098944], 
+                title: 'Napfényfürdő Aquapolis Szeged',
+                description: 'Ahol a víz, a csúzdák és a nevetés találkozik, és együtt élveztük a szegedi nyaralást!',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+
+            {
+                id: 'mondocon',
+                coords: [47.4938810032448, 19.123495497481873], 
+                title: 'A MondoCon',
+                description: 'Ahol a képregények, animek és cosplay világában együtt merültünk el, és élveztük a geek kultúra varázsát!',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+            {
+                id: 'wasser',
+                coords: [47.56255589832734, 19.07099653981488], 
+                title: 'A dunaparti kutyasétáltatás',
+                description: 'Ahol lementünk a Dunához Picivel, és élveztük a koktélokat, a látványt, és ahogyan Pici összesározta magát teljesen',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+            {
+                id: 'dunakeszi',
+                coords: [47.56255589832734, 19.07099653981488], 
+                title: 'A dunakeszi kiruccanás',
+                description: 'Ahol elmentünk édesanyukád ismerőseihez, és szokás szerint nyírtük egymást, és fent beleültem az öledbe xd',
+                images: [
+                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
+                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
+                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                ]
+            },
+        ];
+
+        // 4. Create custom icon using DivIcon
+        const heartIcon = L.divIcon({
+            className: 'custom-leaflet-marker',
+            iconSize: [34, 34],
+            iconAnchor: [17, 17], // Point of the icon which will correspond to marker's location
+            popupAnchor: [0, -20]  // Point from which the popup should open relative to the iconAnchor
+        });
+
+        // Function to create HTML for the popup card
+        function createPopupHTML(memory) {
+            const images = memory.images || [];
+            return `
+                <div class="memory-card">
+                    <img src="${images[0]}" alt="${memory.title}" class="memory-card-image" />
+                    <div class="memory-card-body">
+                        <h3 class="memory-card-title">${memory.title}</h3>
+                        <p class="memory-card-text">${memory.description}</p>
+                        <button class="memory-card-btn" type="button" data-open-memory="${memory.id}">Nagyobb kártya megnyitása</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        const memoryModal = document.getElementById('memory-modal');
+        const memoryModalContent = document.getElementById('memory-modal-content');
+        const memoryModalClose = memoryModal.querySelector('.memory-modal-close');
+        let lastMemoryTrigger = null;
+
+        function openMemory(memory, trigger) {
+            lastMemoryTrigger = trigger;
+            memoryModalContent.innerHTML = `
+                <h2 id="memory-modal-title" class="memory-card-title">${memory.title}</h2>
+                <p class="memory-card-text">${memory.description}</p>
+                <div class="memory-gallery">
+                    ${(memory.images || []).map((image, index) => `
+                        <img src="${image}" alt="${memory.title} – ${index + 1}. kép" />
+                    `).join('')}
+                </div>
+            `;
+            memoryModal.hidden = false;
+            memoryModalClose.focus();
+        }
+
+        function closeMemory() {
+            memoryModal.hidden = true;
+            memoryModalContent.innerHTML = '';
+            if (lastMemoryTrigger && lastMemoryTrigger.isConnected) {
+                lastMemoryTrigger.focus();
+            }
+        }
+
+        document.addEventListener('click', event => {
+            const trigger = event.target.closest('[data-open-memory]');
+            if (trigger) {
+                const memory = memories.find(item => item.id === trigger.dataset.openMemory);
+                if (memory) {
+                    openMemory(memory, trigger);
+                }
+                return;
+            }
+
+            if (event.target === memoryModal || event.target === memoryModalClose) {
+                closeMemory();
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !memoryModal.hidden) {
+                closeMemory();
+            }
+        });
+
+        // 5. Add markers to the map
+        const bounds = []; // To adjust view to fit all markers
+
+        memories.forEach(memory => {
+            const marker = L.marker(memory.coords, { icon: heartIcon }).addTo(map);
+            
+            // Bind popup
+            marker.bindPopup(createPopupHTML(memory), {
+                closeButton: true,
+                minWidth: 300,
+                maxWidth: 300
+            });
+
+            // Fly to marker when clicked and open popup
+            marker.on('click', function(e) {
+                map.flyTo(memory.coords, 13, {
+                    animate: true,
+                    duration: 1.5 // 1.5 seconds smooth flight
+                });
+            });
+
+            bounds.push(memory.coords);
+        });
+
+        // 6. Optional: Fit the map bounds to show all markers initially
+        // Delay slightly to ensure map container is fully rendered
+        setTimeout(() => {
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        }, 500);
+        }
+    </script>
+</body>
+</html>

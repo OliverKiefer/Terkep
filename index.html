@@ -467,6 +467,8 @@
         }).addTo(map);
 
         // 3. Our Memory Data (Lat, Lng)
+        // A letöltött képeket az img mappába másold, az elérési útjukat pedig az images listába írd.
+        // Példa: 'img/westend1.jpg'
         const memories = [
             {
                 id: 'baja',
@@ -474,11 +476,11 @@
                 title: 'Baja',
                 description: 'Amikor sok év után végre lejöttél Bajára, és együtt fedeztük fel a várost!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/baja1.jpg',
+                    'img/baja2.jpg',
+                    'img/baja3.jpg',
+                    'img/baja4.jpg',
+                    'img/baja5.jpg'
                 ]
             },
             {
@@ -486,13 +488,8 @@
                 coords: [47.5140281240459, 19.059324643647546],
                 title: 'Westend',
                 description: 'Ahol a kalandok kezdődtek!',
-                images: [
-                    'https://lh3.googleusercontent.com/grass-cs/AABkmLflHnydTvqnfhKc9EdSw2B5PYvlnM6or6CbqfWPP9bDkyE01khwH7DOwjDyvY5N0YbDixoUSW_WAwyj44HZbUCiWs3mP4vDsmZSD3PZkSHvrsszrDZMSiqELvUH-2o54cPisuRXac5RpEUP=w408-h544-k-no',
-                    'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&q=80&w=900'
-                ]
+                // Ide írd a képek útvonalát, például: 'img/westend1.jpg'
+                images: []
             },
             {
                 id: 'illuziokMuzeuma',
@@ -500,11 +497,26 @@
                 title: 'Illúziók Múzeuma',
                 description: 'Ahol a valóság és az illúzió találkozik, és együtt csodálkoztunk a trükkökön!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/illuziok1.jpg',
+                    'img/illuziok2.jpg',
+                    'img/illuziok3.jpg',
+                    'img/illuziok4.jpg',
+                    'img/illuziok5.jpg',
+                    'img/illuziok6.jpg',
+                    'img/illuziok7.jpg',
+                    'img/illuziok8.jpg',
+                    'img/illuziok9.jpg',
+                    'img/illuziok10.jpg',
+                    'img/illuziok11.jpg',
+                    'img/illuziok12.jpg',
+                    'img/illuziok13.jpg',
+                    'img/illuziok14.jpg',
+                    'img/illuziok15.jpg',
+                    'img/illuziok16.jpg',
+                    'img/illuziok17.jpg',
+                    'img/illuziok18.jpg',
+                    'img/illuziok19.jpg',
+                    'img/illuziok20.jpg'
                 ]
             },
             {
@@ -513,11 +525,19 @@
                 title: 'Napfényfürdő Aquapolis Szeged',
                 description: 'Ahol a víz, a csúzdák és a nevetés találkozik, és együtt élveztük a szegedi nyaralást!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/szeged1.jpg',
+                    'img/szeged2.jpg',
+                    'img/szeged3.jpg',
+                    'img/szeged4.jpg',
+                    'img/szeged5.jpg',
+                    'img/szeged6.jpg',
+                    'img/szeged7.jpg',
+                    'img/szeged8.jpg',
+                    'img/szeged9.jpg',
+                    'img/szeged10.jpg',
+                    'img/szeged11.jpg',
+                    'img/szeged12.jpg',
+                    'img/szeged13.jpg'
                 ]
             },
 
@@ -526,12 +546,10 @@
                 coords: [47.4938810032448, 19.123495497481873], 
                 title: 'A MondoCon',
                 description: 'Ahol a képregények, animek és cosplay világában együtt merültünk el, és élveztük a geek kultúra varázsát!',
-                images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                images: 
+                [   
+                    'img/mondocon1.jpg',
+                    'img/mondocon2.jpg'
                 ]
             },
             {
@@ -539,13 +557,8 @@
                 coords: [47.56185364700855, 19.071522252726865], 
                 title: 'A dunaparti kutyasétáltatás',
                 description: 'Ahol lementünk a Dunához Picivel, és élveztük a koktélokat, a látványt, és ahogyan Pici összesározta magát teljesen',
-                images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
-                ]
+                // Ide írd a képek útvonalát, például: 'img/wasser1.jpg'
+                images: []
             },
             {
                 id: 'dunakeszi',
@@ -553,11 +566,11 @@
                 title: 'A dunakeszi kiruccanás',
                 description: 'Ahol elmentünk édesanyukád ismerőseihez, és szokás szerint nyírtük egymást, és fent beleültem az öledbe xd',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/dunakeszi1.jpg',
+                    'img/dunakeszi2.jpg',
+                    'img/dunakeszi3.jpg',
+                    'img/dunakeszi4.jpg',
+                    'img/dunakeszi5.jpg'
                 ]
             },
 
@@ -567,11 +580,14 @@
                 title: 'Csokonai utca 15',
                 description: 'Ahol a legtöbb időt töltöttük, és legtöbb/legjobb emlékeket szereztük, és ahol a legtöbb közös pillanatunk történt!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/csokonai1.jpg',
+                    'img/csokonai2.jpg',
+                    'img/csokonai3.jpg',
+                    'img/csokonai4.jpg',
+                    'img/csokonai5.jpg',
+                    'img/csokonai6.jpg',
+                    'img/csokonai7.jpg',
+                    'img/csokonai8.jpg'
                 ]
             },
 
@@ -580,13 +596,8 @@
                 coords: [47.519082156969866, 19.06167677707486], 
                 title: 'Kánaán Étterem és Kávézó',
                 description: 'Ahol megkostoltuk a taco sushit, és eggyütt kóstoltuk meg ezt a furcsa de finom ételt szüleiddel eggyütt!',
-                images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
-                ]
+                // Ide írd a képek útvonalát, például: 'img/kanaan1.jpg'
+                images: []
             },
 
             {
@@ -594,13 +605,8 @@
                 coords: [47.515537263264974, 19.056160661151907], 
                 title: '2D Café Beloved',
                 description: 'Ahol megkóstoltuk a nemtudommilyen palacsintát, te pedig a machát, ami elképesztően finom volt!',
-                images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
-                ]
+                // Ide írd a képek útvonalát, például: 'img/2dcafe1.jpg'
+                images: []
             },
 
             {
@@ -609,11 +615,9 @@
                 title: 'Fáy András u. 29',
                 description: 'Ahol szülinapoztunk Zoliéknál, és ahol kegyetlenül rosszul voltam, de te akkor is segítettél nekem, amit köszönök neked!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/acs1.jpg',
+                    'img/acs2.jpg',
+                    'img/acs3.jpg'
                 ]
             },
 
@@ -622,12 +626,18 @@
                 coords: [47.51265728380942, 19.04629643425526], 
                 title: 'A tűzijáték a Duna parton',
                 description: 'Ahol a tűzijátékot néztük, és együtt élveztük a látványt, a hangulatot, és a pillanat varázsát!',
+                images: ['img/tuzijatek1.jpg', 'img/tuzijatek2.jpg']
+            },
+
+            {
+                id: 'szabaduloszoba',
+                coords: [46.25311811163926, 20.152184107060783],
+                title: 'Haunted House Escape Room Szeged',
+                description: 'Ahol a szabadulószobában együtt oldottuk meg a rejtélyeket, és élveztük a kihívást és az izgalmat!',
                 images: [
-                    'https://images.unsplash.com/photo-1513622470522-26c311c4c8d5?auto=format&fit=crop&q=80&w=600',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=900',
-                    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=900'
+                    'img/szabaduloszoba1.jpg',
+                    'img/szabaduloszoba2.jpg',
+                    'img/szabaduloszoba3.jpg'
                 ]
             },
         ];
@@ -645,7 +655,7 @@
             const images = memory.images || [];
             return `
                 <div class="memory-card">
-                    <img src="${images[0]}" alt="${memory.title}" class="memory-card-image" />
+                    ${images[0] ? `<img src="${images[0]}" alt="${memory.title}" class="memory-card-image" />` : ''}
                     <div class="memory-card-body">
                         <h3 class="memory-card-title">${memory.title}</h3>
                         <p class="memory-card-text">${memory.description}</p>
@@ -665,11 +675,13 @@
             memoryModalContent.innerHTML = `
                 <h2 id="memory-modal-title" class="memory-card-title">${memory.title}</h2>
                 <p class="memory-card-text">${memory.description}</p>
-                <div class="memory-gallery">
-                    ${(memory.images || []).map((image, index) => `
-                        <img src="${image}" alt="${memory.title} – ${index + 1}. kép" />
-                    `).join('')}
-                </div>
+                ${(memory.images || []).length ? `
+                    <div class="memory-gallery">
+                        ${memory.images.map((image, index) => `
+                            <img src="${image}" alt="${memory.title} – ${index + 1}. kép" />
+                        `).join('')}
+                    </div>
+                ` : ''}
             `;
             memoryModal.hidden = false;
             memoryModalClose.focus();
